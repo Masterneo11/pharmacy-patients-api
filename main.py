@@ -1,6 +1,6 @@
 import json
 
-import uuid
+
 
 from fastapi import FastAPI
 from models import Patient
@@ -13,8 +13,7 @@ with open("patients.json", "r") as f:
 
 patients = []
 for patient_data in data:
-    patient_id = uuid.uuid4()
-    patient = Patient(id=patient_id, **patient_data)
+    patient = Patient(**patient_data)
     patients.append(patient)
 
 @app.get("/patients")
@@ -25,17 +24,17 @@ async def get_patients() -> list[Patient]:
 async def add_new_patient(patient: Patient):
     patients.append(patient)
 
-@app.put("/patients/{p_id}")
-async def update_patient_info(p_id: uuid.UUID, updated_patient: Patient) -> None:
+@app.put("/patients/{first_name}")
+async def update_patient_info(first_name: str, updated_patient: Patient) -> None:
     for i, patient in enumerate(patients):
-        if patient.id == p_id:
+        if patient.first_name.lower() == first_name.lower():
             patients[i] = updated_patient
             return 
 
-@app.delete("/patients/{p_id}")
-async def delete_patient(p_id: uuid.UUID) -> None:
+@app.delete("/patients/{first_name}")
+async def delete_patient(first_name: str) -> None:
     for i, patient in enumerate(patients):
-        if patient.id == p_id:
+        if patient.first_name.lower() == first_name.lower():
             patients.pop(i)
             return 
 
