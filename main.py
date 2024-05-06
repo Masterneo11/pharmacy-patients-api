@@ -1,10 +1,7 @@
 import json
 
-
-
 from fastapi import FastAPI
 from models import Patient
-
 
 app = FastAPI()
 
@@ -26,10 +23,16 @@ async def add_new_patient(patient: Patient):
 
 @app.put("/patients/{first_name}")
 async def update_patient_info(first_name: str, updated_patient: Patient) -> None:
+    index = int
+    found = False
     for i, patient in enumerate(patients):
         if patient.first_name.lower() == first_name.lower():
-            patients[i] = updated_patient
-            return 
+            found = True
+            index = i
+    if found:
+        patients[index] = updated_patient
+    else:
+        patients.append(updated_patient)
 
 @app.delete("/patients/{first_name}")
 async def delete_patient(first_name: str) -> None:

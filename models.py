@@ -7,3 +7,4 @@ class Patient(BaseModel):
     address: str 
     age: int 
 
+
